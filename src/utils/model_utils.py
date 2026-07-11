@@ -61,3 +61,42 @@ def split_temporal_por_fecha(df, columna_fecha='Fecha', n_splits=5):
         splits.append((train_idx, val_idx))
 
     return splits
+
+def evaluar_modelo_log(modelo, X, y, splits, nombre_modelo, nombre_features):
+    """
+    Igual que evaluar_modelo pero entrena sobre log1p(y) y revierte con expm1
+    antes de calcular las métricas, que se miden en la escala original.
+    Hace la validación cruzada manualmente sobre la lista de splits.
+    """
+    import numpy as np
+    from sklearn.base import clone
+    from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+    rmse_list, mae_list, r2_list = [], [], []
+    inicio = time.time()
+
+    for tr_idx, val_idx in splits:
+        X_tr, X_val = X.loc[tr_idx], X.loc[val_idx]
+        y_tr, y_val = y.loc[tr_idx], y.loc[val_idx]
+
+        m = clone(modelo)
+        m.fit(X_tr, np.log1p(y_tr))
+        y_pred = np.expm1(m.predict(X_val))
+        y_pred = np.clip(y_pred, 0, None)  # no permitir predicciones negativas
+
+        rmse_list.append(np.sqrt(mean_squared_error(y_val, y_pred)))
+        mae_list.append(mean_absolute_error(y_val, y_pred))
+        r2_list.append(r2_score(y_val, y_pred))
+
+    fin = time.time()
+    return {
+        'Modelo'    : nombre_modelo,
+        'Features'  : nombre_features,
+        'RMSE_medio': round(np.mean(rmse_list), 4),
+        'RMSE_std'  : round(np.std(rmse_list), 4),
+        'MAE_medio' : round(np.mean(mae_list), 4),
+        'MAE_std'   : round(np.std(mae_list), 4),
+        'R2_medio'  : round(np.mean(r2_list), 4),
+        'R2_std'    : round(np.std(r2_list), 4),
+        'Tiempo_seg': round(fin - inicio, 2)
+    }
