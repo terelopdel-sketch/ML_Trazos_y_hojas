@@ -1,6 +1,7 @@
 import time
-import pandas as pde
+import pandas as pd
 from sklearn.model_selection import cross_validate
+from sklearn.preprocessing import OrdinalEncoder
 
 def evaluar_modelo(modelo, X, y, cv, scorers, nombre_modelo, nombre_features):
     inicio= time.time()
@@ -19,11 +20,16 @@ def evaluar_modelo(modelo, X, y, cv, scorers, nombre_modelo, nombre_features):
         'Tiempo_seg': round(fin - inicio, 2)
     }
 
-def encodear_para_rf(train_df, test_df, features, features_categoricas):
+def encodear_ordinal(train_df, test_df, features, features_categoricas):
     cat_feats = [f for f in features if f in features_categoricas]
+    num_feats = [f for f in features if f not in features_categoricas]
 
-    tr_enc = pd.get_dummies(train_df[features], columns=cat_feats, drop_first=True)
-    te_enc = pd.get_dummies(test_df[features], columns=cat_feats, drop_first=True)
-    te_enc = te_enc.reindex(columns=tr_enc.columns, fill_value=0)
+    tr = train_df[features].copy()
+    te = test_df[features].copy()
 
-    return tr_enc, te_enc, cat_feats
+    if cat_feats:
+        enc = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+        tr[cat_feats] = enc.fit_transform(tr[cat_feats])
+        te[cat_feats] = enc.transform(te[cat_feats])
+
+    return tr, te
