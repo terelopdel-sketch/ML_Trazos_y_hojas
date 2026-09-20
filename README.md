@@ -68,7 +68,7 @@ ML_Trazos_y_hojas/
 │
 ├── src/
 │   ├── data_sample/
-│   │   ├── DatosBrutos (1).csv         # Export bruto del TPV: 11.613 filas × 20 columnas
+│   │   ├── DatosBrutos.csv         # Export bruto del TPV: 11.613 filas × 20 columnas
 │   │   └── target_final.csv            # Target agregado producto-día, ya filtrado a productos aptos
 │   │
 │   ├── img/
@@ -85,7 +85,7 @@ ML_Trazos_y_hojas/
 │   │
 │   ├── notebooks/
 │   │   ├── EDA.ipynb                   # Exploración, target y selección de productos
-│   │   ├── Pre_procesing_1.ipynb       # Feature engineering y selección de variables
+│   │   ├── Pre_procesing.ipynb       # Feature engineering y selección de variables
 │   │   └── Modeling.ipynb              # Comparativa de modelos, optimización y evaluación
 │   │
 │   └── utils/
@@ -109,7 +109,7 @@ El proyecto se ha desarrollado en paralelo por los tres miembros del equipo, cad
 | `main` | Esqueleto del repositorio | — |
 | `develop` | Estructura de carpetas base + notebook de preprocesado sin desarrollar | — |
 | `Raquel/-eda` | `EDA.ipynb`: exploración inicial, construcción del target y selección de productos | Raquel ([@raquelmg1312](https://github.com/raquelmg1312)) |
-| `Ali/-Pre-Processing` | `EDA.ipynb` + `Pre_procesing_1.ipynb`: feature engineering, lags y selección de variables | Ali ([@alimadriz0110](https://github.com/alimadriz0110)) |
+| `Ali/-Pre-Processing` | `EDA.ipynb` + `Pre_procesing.ipynb`: feature engineering, lags y selección de variables | Ali ([@alimadriz0110](https://github.com/alimadriz0110)) |
 | `Tere/modeling` | `Modeling.ipynb`: comparativa de modelos, optimización, evaluación y persistencia | Tere ([@terelopdel-sketch](https://github.com/terelopdel-sketch)) |
 
 ---
@@ -181,7 +181,7 @@ Resultado: **31 productos aptos**, que forman el universo final sobre el que se 
 - Detección de días con demanda atípica (método IQR)
 - Selección de los 31 productos aptos para modelar
 
-<h3 style="color:#8F7C52;">6.2 Preprocesado (`Pre_procesing_1.ipynb`)</h3>
+<h3 style="color:#8F7C52;">6.2 Preprocesado (`Pre_procesing.ipynb`)</h3>
 
 - Limpieza y filtrado a los 31 productos aptos
 - **Feature engineering temporal:** `lag_1` (ventas del día anterior), `lag_7` (ventas hace una semana), medias y desviaciones móviles (`media_movil_7`, `media_movil_14`, `std_movil_7`)
@@ -318,7 +318,7 @@ Cada rama contiene su propio notebook de trabajo; se recomienda ejecutarlos en e
 
 ```bash
 jupyter notebook src/notebooks/EDA.ipynb
-jupyter notebook src/notebooks/Pre_procesing_1.ipynb
+jupyter notebook src/notebooks/Pre_procesing.ipynb
 jupyter notebook src/notebooks/Modeling.ipynb
 ```
 
@@ -335,7 +335,7 @@ Principales librerías utilizadas (ver `requirements.txt` para el listado comple
 | `pandas`, `numpy` | Manipulación de datos |
 | `matplotlib`, `seaborn` | Visualización en el EDA |
 | `scikit-learn` | Preprocesado, selección de features, métricas |
-| `lightgbm`, `catboost`, `xgboost` | Modelos de *gradient boosting* |
+| `lightgbm`, `catboost`| Modelos de *gradient boosting* |
 | `optuna` | Optimización bayesiana de hiperparámetros |
 | `shap` | Interpretabilidad del modelo final |
 | `joblib` | Persistencia del modelo |
